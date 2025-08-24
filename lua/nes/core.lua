@@ -117,9 +117,9 @@ function M._display_next_suggestion(bufnr, state)
 		ui.deleted_extmark_id =
 		    vim.api.nvim_buf_set_extmark(bufnr, ns_id, state.line_offset + suggestion.text_edit.range.start.line,
 			    0, {
-			    hl_group = "NesDelete",
-			    end_line = state.line_offset + suggestion.text_edit.range["end"].line,
-		    })
+				    hl_group = "NesDelete",
+				    end_line = state.line_offset + suggestion.text_edit.range["end"].line,
+			    })
 	end
 	local added_lines = vim.split(suggestion.text_edit.newText, "\n")
 	local added_lines_count = suggestion.text_edit.newText == "" and 0 or #added_lines - 1
@@ -276,6 +276,7 @@ end
 
 ---@param bufnr? integer
 function M.get_suggestion(bufnr)
+	vim.b.nes_lualine_msg = "☕"
 	bufnr = bufnr and bufnr > 0 and bufnr or vim.api.nvim_get_current_buf()
 	local ctx = Context.new(bufnr)
 	local payload = ctx:payload()
@@ -283,6 +284,7 @@ function M.get_suggestion(bufnr)
 		local next_version = vim.trim(stdout)
 		assert(next_version)
 		if not vim.startswith(next_version, "<next-version>") then
+			vim.b.nes_lualine_msg = nil
 			return
 		end
 		vim.schedule(function()
@@ -294,6 +296,7 @@ end
 ---@param bufnr? integer
 ---@param opts? nes.Apply.Opts
 function M.apply_suggestion(bufnr, opts)
+	vim.b.nes_lualine_msg = nil
 	opts = opts or {}
 
 	bufnr = bufnr and bufnr > 0 and bufnr or vim.api.nvim_get_current_buf()
@@ -317,6 +320,7 @@ end
 
 ---@param bufnr? integer
 function M.clear_suggestion(bufnr)
+	vim.b.nes_lualine_msg = nil
 	bufnr = bufnr and bufnr > 0 and bufnr or vim.api.nvim_get_current_buf()
 	vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
 	local state = vim.b[bufnr].nes_state
