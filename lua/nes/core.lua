@@ -155,7 +155,7 @@ function M._display_next_suggestion(bufnr, state)
 			width = win_width - offset,
 			height = #added_lines - 1,
 			row = state.line_offset + suggestion.text_edit.range["end"].line - cursor[1] + 1,
-			col = -cursor[2] + 1,
+			col = -cursor[2],
 			style = "minimal",
 			border = "none",
 		})
