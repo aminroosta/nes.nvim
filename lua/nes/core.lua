@@ -115,10 +115,11 @@ function M._display_next_suggestion(bufnr, state)
 	local deleted_lines_count = suggestion.text_edit.range["end"].line - suggestion.text_edit.range.start.line
 	if deleted_lines_count > 0 then
 		ui.deleted_extmark_id =
-			vim.api.nvim_buf_set_extmark(bufnr, ns_id, state.line_offset + suggestion.text_edit.range.start.line, 0, {
-				hl_group = "NesDelete",
-				end_line = state.line_offset + suggestion.text_edit.range["end"].line,
-			})
+		    vim.api.nvim_buf_set_extmark(bufnr, ns_id, state.line_offset + suggestion.text_edit.range.start.line,
+			    0, {
+			    hl_group = "NesDelete",
+			    end_line = state.line_offset + suggestion.text_edit.range["end"].line,
+		    })
 	end
 	local added_lines = vim.split(suggestion.text_edit.newText, "\n")
 	local added_lines_count = suggestion.text_edit.newText == "" and 0 or #added_lines - 1
@@ -154,7 +155,7 @@ function M._display_next_suggestion(bufnr, state)
 			width = win_width - offset,
 			height = #added_lines - 1,
 			row = state.line_offset + suggestion.text_edit.range["end"].line - cursor[1] + 1,
-			col = 0,
+			col = -cursor[2] + 1,
 			style = "minimal",
 			border = "none",
 		})

@@ -18,6 +18,7 @@ When responding to the programmer, you must follow these rules:
 - Do not alter method signatures, add or remove return values, or modify existing logic unless explicitly instructed.
 - The current cursor position is indicated by <|cursor|>. You MUST keep the cursor position the same in your response.
 - DO NOT REMOVE <|cursor|>.
+- Avoid adding unnecessary text, such as comments.
 - You must ONLY reply using the tag: <next-version>.
 ]]
 
