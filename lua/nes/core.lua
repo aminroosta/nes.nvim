@@ -169,25 +169,25 @@ function M._display_next_suggestion(bufnr, state)
 	suggestion.ui = ui
 	state.suggestions[1] = suggestion
 
-	vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-		buffer = bufnr,
-		callback = function()
-			if not vim.b.nes_state then
-				return true
-			end
-
-			local accepted_cursor = vim.b.nes_state.accepted_cursor
-			if accepted_cursor then
-				local cursor = vim.api.nvim_win_get_cursor(win_id)
-				if cursor[1] == accepted_cursor[1] and cursor[2] == accepted_cursor[2] then
-					return
-				end
-			end
-
-			M.clear_suggestion(bufnr)
-			return true
-		end,
-	})
+	-- vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+	-- 	buffer = bufnr,
+	-- 	callback = function()
+	-- 		if not vim.b.nes_state then
+	-- 			return true
+	-- 		end
+	--
+	-- 		local accepted_cursor = vim.b.nes_state.accepted_cursor
+	-- 		if accepted_cursor then
+	-- 			local cursor = vim.api.nvim_win_get_cursor(win_id)
+	-- 			if cursor[1] == accepted_cursor[1] and cursor[2] == accepted_cursor[2] then
+	-- 				return
+	-- 			end
+	-- 		end
+	--
+	-- 		M.clear_suggestion(bufnr)
+	-- 		return true
+	-- 	end,
+	-- })
 
 	return state
 end
