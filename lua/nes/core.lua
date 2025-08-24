@@ -115,11 +115,11 @@ function M._display_next_suggestion(bufnr, state)
 	local deleted_lines_count = suggestion.text_edit.range["end"].line - suggestion.text_edit.range.start.line
 	if deleted_lines_count > 0 then
 		ui.deleted_extmark_id =
-		    vim.api.nvim_buf_set_extmark(bufnr, ns_id, state.line_offset + suggestion.text_edit.range.start.line,
-			    0, {
-				    hl_group = "NesDelete",
-				    end_line = state.line_offset + suggestion.text_edit.range["end"].line,
-			    })
+				vim.api.nvim_buf_set_extmark(bufnr, ns_id, state.line_offset + suggestion.text_edit.range.start.line,
+					0, {
+						hl_group = "NesDelete",
+						end_line = state.line_offset + suggestion.text_edit.range["end"].line,
+					})
 	end
 	local added_lines = vim.split(suggestion.text_edit.newText, "\n")
 	local added_lines_count = suggestion.text_edit.newText == "" and 0 or #added_lines - 1
@@ -169,25 +169,40 @@ function M._display_next_suggestion(bufnr, state)
 	suggestion.ui = ui
 	state.suggestions[1] = suggestion
 
-	-- vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-	-- 	buffer = bufnr,
-	-- 	callback = function()
-	-- 		if not vim.b.nes_state then
-	-- 			return true
-	-- 		end
-	--
-	-- 		local accepted_cursor = vim.b.nes_state.accepted_cursor
-	-- 		if accepted_cursor then
-	-- 			local cursor = vim.api.nvim_win_get_cursor(win_id)
-	-- 			if cursor[1] == accepted_cursor[1] and cursor[2] == accepted_cursor[2] then
-	-- 				return
-	-- 			end
-	-- 		end
-	--
-	-- 		M.clear_suggestion(bufnr)
-	-- 		return true
-	-- 	end,
-	-- })
+	vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+		buffer = bufnr,
+		callback = function()
+			if not vim.b.nes_state then
+				return true
+			end
+
+			local accepted_cursor = vim.b.nes_state.accepted_cursor
+			if accepted_cursor then
+				local cursor = vim.api.nvim_win_get_cursor(win_id)
+				if cursor[1] == accepted_cursor[1] and cursor[2] == accepted_cursor[2] then
+					return
+				end
+			end
+			vim.b.nes_state._move_cnt = vim.b.nes_state._move_cnt and vim.b.nes_state._move_cnt + 1 or 1
+
+			if vim.b.nes_state._move_cnt > 4 then
+				vim.b.nes_state._move_cnt = nil
+				M.clear_suggestion(bufnr)
+				return true
+			end
+		end,
+	})
+	vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
+		buffer = bufnr,
+		once = true,
+		callback = function()
+			if vim.api.nvim_buf_is_valid(bufnr) then
+				if vim.b.nes_state then
+					M.clear_suggestion(bufnr)
+				end
+			end
+		end,
+	})
 
 	return state
 end
