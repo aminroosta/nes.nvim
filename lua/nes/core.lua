@@ -197,7 +197,7 @@ function M._display_next_suggestion(bufnr, state)
 			end
 		end,
 	})
-	vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
+	vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave", "InsertEnter" }, {
 		buffer = bufnr,
 		once = true,
 		callback = function()
@@ -284,6 +284,9 @@ local function parse_suggestion(ctx, next_version)
 			local added_lines = {}
 			for i = start_b, start_b + count_b - 1 do
 				table.insert(added_lines, new_lines[i])
+			end
+			if #added_lines > 2 then
+				return
 			end
 			text_edit.newText = table.concat(added_lines, "\n") .. "\n"
 		end
