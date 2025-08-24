@@ -183,10 +183,15 @@ function M._display_next_suggestion(bufnr, state)
 					return
 				end
 			end
-			vim.b.nes_state._move_cnt = vim.b.nes_state._move_cnt and vim.b.nes_state._move_cnt + 1 or 1
 
-			if vim.b.nes_state._move_cnt > 4 then
-				vim.b.nes_state._move_cnt = nil
+			if vim.b.nes_move_cnt then
+				vim.b.nes_move_cnt = vim.b.nes_move_cnt + 1
+			else
+				vim.b.nes_move_cnt = 1
+			end
+
+			if vim.b.nes_move_cnt > 4 then
+				vim.b.nes_move_cnt = nil
 				M.clear_suggestion(bufnr)
 				return true
 			end
