@@ -285,9 +285,6 @@ local function parse_suggestion(ctx, next_version)
 			for i = start_b, start_b + count_b - 1 do
 				table.insert(added_lines, new_lines[i])
 			end
-			if #added_lines > 3 then
-				return
-			end
 			text_edit.newText = table.concat(added_lines, "\n") .. "\n"
 		end
 		table.insert(state.suggestions, { text_edit = text_edit })
